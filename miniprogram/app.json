@@ -1,19 +1,40 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/userConsole/userConsole",
-    "pages/storageConsole/storageConsole",
-    "pages/databaseGuide/databaseGuide",
-    "pages/addFunction/addFunction",
-    "pages/deployFunctions/deployFunctions",
-    "pages/chooseLib/chooseLib"
+    "pages/topic/topic",
+    "pages/mine/mine",
+    "pages/topic/topiclist/topiclist",
+    "pages/detail/detail",
+    "pages/mine/collection/collection",
+    "pages/admin/index",
+    "pages/mine/notice/notice",
+    "pages/mine/release/release"
   ],
   "window": {
-    "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#F6F6F6",
-    "navigationBarTitleText": "云开发 QuickStart",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "CandyMuj",
     "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#959394",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "/images/tab/index.png",
+        "selectedIconPath": "/images/tab/index_clicked.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "/images/tab/mine.png",
+        "selectedIconPath": "/images/tab/mine_clicked.png",
+        "text": "我的"
+      }
+    ]
   },
   "sitemapLocation": "sitemap.json"
 }

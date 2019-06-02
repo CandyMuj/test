@@ -1,120 +1,113 @@
-//index.js
-const app = getApp()
-
+const api = require('../../utils/api.js');
+const regeneratorRuntime = require('../../utils/runtime.js');
 Page({
+
+  /**
+   * 页面的初始数据
+   */
   data: {
-    avatarUrl: './user-unlogin.png',
-    userInfo: {},
-    logged: false,
-    takeSession: false,
-    requestResult: ''
+    posts: [],
+    page: 1,
+    filter: "",
+    nodata: false,
+    nomore: false,
+    defaultSearchValue:""
   },
 
-  onLoad: function() {
-    if (!wx.cloud) {
-      wx.redirectTo({
-        url: '../chooseLib/chooseLib',
-      })
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: async function (options) {
+    await this.getPostsList('')
+  },
+  /**
+   * 页面相关事件处理函数--监听用户下拉动作
+   */
+  onPullDownRefresh: async function () {
+    let that = this;
+    let page = 1
+    that.setData({
+      page: page,
+      posts: [],
+      filter: "",
+      nomore: false,
+      nodata: false,
+      defaultSearchValue:""
+    })
+    await this.getPostsList("")
+    wx.stopPullDownRefresh();
+  },
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom: async function () {
+    let filter = this.data.filter
+    await this.getPostsList(filter)
+  },
+
+  /**
+   * 用户点击右上角分享
+   */
+  onShareAppMessage: function () {
+
+  },
+  /**
+   * 点击文章明细
+   */
+  bindPostDetail: function (e) {
+    let blogId = e.currentTarget.id;
+    wx.navigateTo({
+      url: '../detail/detail?id=' + blogId
+    })
+  },
+  /**
+   * 搜索功能
+   * @param {} e 
+   */
+  bindconfirm: async function (e) {
+    let that = this;
+    console.log('e.detail.value', e.detail.value.searchContent)
+    let page = 1
+    that.setData({
+      page: page,
+      posts: [],
+      filter: e.detail.value.searchContent,
+      nomore: false,
+      nodata: false
+    })
+    await this.getPostsList(e.detail.value.searchContent)
+  },
+  /**
+   * 获取文章列表
+   */
+  getPostsList: async function (filter) {
+    wx.showLoading({
+      title: '加载中...',
+    })
+    let that = this
+    let page = that.data.page
+    if (that.data.nomore) {
+      wx.hideLoading()
       return
     }
-
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              this.setData({
-                avatarUrl: res.userInfo.avatarUrl,
-                userInfo: res.userInfo
-              })
-            }
-          })
-        }
+    let result = await api.getPostsList(page, filter)
+    if (result.data.length === 0) {
+      that.setData({
+        nomore: true
+      })
+      if (page === 1) {
+        that.setData({
+          nodata: true
+        })
       }
-    })
-  },
-
-  onGetUserInfo: function(e) {
-    if (!this.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo
+    }
+    else {
+      that.setData({
+        page: page + 1,
+        posts: that.data.posts.concat(result.data),
       })
     }
-  },
-
-  onGetOpenid: function() {
-    // 调用云函数
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-        app.globalData.openid = res.result.openid
-        wx.navigateTo({
-          url: '../userConsole/userConsole',
-        })
-      },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-        wx.navigateTo({
-          url: '../deployFunctions/deployFunctions',
-        })
-      }
-    })
-  },
-
-  // 上传图片
-  doUpload: function () {
-    // 选择图片
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: function (res) {
-
-        wx.showLoading({
-          title: '上传中',
-        })
-
-        const filePath = res.tempFilePaths[0]
-        
-        // 上传图片
-        const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-        wx.cloud.uploadFile({
-          cloudPath,
-          filePath,
-          success: res => {
-            console.log('[上传文件] 成功：', res)
-
-            app.globalData.fileID = res.fileID
-            app.globalData.cloudPath = cloudPath
-            app.globalData.imagePath = filePath
-            
-            wx.navigateTo({
-              url: '../storageConsole/storageConsole'
-            })
-          },
-          fail: e => {
-            console.error('[上传文件] 失败：', e)
-            wx.showToast({
-              icon: 'none',
-              title: '上传失败',
-            })
-          },
-          complete: () => {
-            wx.hideLoading()
-          }
-        })
-
-      },
-      fail: e => {
-        console.error(e)
-      }
-    })
-  },
-
+    wx.hideLoading()
+  }
 })
