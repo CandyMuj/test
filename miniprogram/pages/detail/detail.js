@@ -53,8 +53,14 @@ Page({
     }
     await that.getDetail(blogId)
     await that.getPostRelated(that.data.post._id)
+    // 当文章内容过短时，是无法触发触底事件的，所以无论怎样首次都先初始化加载一次评论
+    // 后期可以根据判断页面内容长度，进行懒加载
+    await that.onReachBottom()
   },
   /**
+   * 加载评论
+   * 首次加载详情页面时初始化评论列表也使用此方法
+   * 
    * 页面上拉触底事件的处理函数
    */
   onReachBottom: async function () {
