@@ -10,3 +10,21 @@
 
 - [云开发文档](https://developers.weixin.qq.com/miniprogram/dev/wxcloud/basis/getting-started.html)
 
+mini-blog 的数据源均来自于云数据库，所以在运行前需要初始化云数据库，在云数据库中新增以下集合：
+
+```
+//缓存小程序or公众号的accessToken
+access_token
+//小程序文章集合
+mini_posts
+//小程序评论内容集合
+mini_comments
+//小程序用户操作文章关联（收藏、点赞）
+mini_posts_related
+//小程序博客相关配置集合
+mini_config
+//小程序博客相关操作日志
+mini_logs
+//小程序博客用户FormID（用于模板消息推送）
+mini_formids
+```
