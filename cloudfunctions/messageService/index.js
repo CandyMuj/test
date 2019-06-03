@@ -6,7 +6,7 @@ const db = cloud.database()
 const _ = db.command
 
 //收到评论通知
-const template = 'cwYd6eGpQ8y7xcVsYWuTSC-FAsAyv5KOAVGvjJIdI9Q'
+const template = 'VZqDqzkRcugTckPtjR-4_6-3B0nCnatQJdEH95YkLWo'
 
 cloud.init()
 
