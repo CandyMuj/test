@@ -347,7 +347,16 @@ Page({
         }]
         await api.addPostChildComment(that.data.commentId, that.data.post._id, childData)
       }
-      let messageResultTask = api.sendTemplateMessage(that.data.userInfo.nickName, content, that.data.post._id)
+      if (e.detail != undefined && e.detail.formId != undefined && e.detail.formId != "the formId is a mock one") {
+        let res = await api.addFormIds([e.detail.formId])
+      }
+      let messageResultTask = api.sendTemplateMessage(
+        app.globalData.openid,
+        that.data.toOpenId,
+        that.data.userInfo.nickName,
+        content,
+        that.data.post._id
+      );
       let commentList = await api.getPostComments(commentPage, that.data.post._id)
       if (commentList.data.length === 0) {
         that.setData({

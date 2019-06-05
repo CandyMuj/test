@@ -40,7 +40,7 @@ async function sendTemplateMessage(event) {
 
   var touser = "";
   var form_id = "";
-  var openId = (!event.tOpenId || event.tOpenId == "") ? process.env.author : event.tOpenId;
+  var openId = (!event.tOpenId || event.tOpenId == "" || event.cOpenId != process.env.author) ? process.env.author : event.tOpenId;
   
   var openIdformIds = await db.collection('mini_formids').where({
     openId: openId

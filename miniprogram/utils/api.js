@@ -283,7 +283,7 @@ function addFormIds(formIds) {
  * @param {*} comment 
  * @param {*} blogId 
  */
-function sendTemplateMessage(nickName, comment, blogId) {
+function sendTemplateMessage(cOpenId, tOpenId, nickName, comment, blogId) {
     return wx.cloud.callFunction({
         name: 'messageService',
         data: {
@@ -291,7 +291,8 @@ function sendTemplateMessage(nickName, comment, blogId) {
             nickName: nickName,
             message: comment,
             blogId: blogId,
-            tOpenId: ""
+            cOpenId: cOpenId,
+            tOpenId: tOpenId
         }
     })
 }
